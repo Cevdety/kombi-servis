@@ -571,6 +571,9 @@ tr:hover td { background: rgba(79,142,247,0.03); }
 
 /* ROLE RESTRICTED */
 .admin-only { display: none; }
+  th.admin-only { display: none; }
+td.admin-only { display: none; }
+
 
 @media (max-width: 768px) {
   .sidebar { transform: translateX(-100%); }
@@ -1082,49 +1085,43 @@ async function loadUserProfile(uid) {
     const snap = await getDoc(doc(db, 'kullanicilar', uid));
     if (snap.exists()) {
       const data = snap.data();
-      // Rol kontrolü - hem 'admin' hem 'Admin' hem 'ADMIN' kabul et
-      const rolRaw = (data.rol || data.role || data.Rol || '').toString().toLowerCase().trim();
+      const rolRaw = (data.rol || data.role || '').toString().toLowerCase().trim();
       currentRole = rolRaw === 'admin' ? 'admin' : 'technician';
 
-      const name = data.ad || data.name || data.displayName || currentUser.email;
+      const name = data.ad || currentUser.email;
       document.getElementById('user-displayname').textContent = name;
       document.getElementById('user-avatar').textContent = name.charAt(0).toUpperCase();
       const roleBadge = document.getElementById('user-role-badge');
-      roleBadge.textContent = currentRole === 'admin' ? '⭐ Yönetici' : '🔧 Teknisyen';
-      roleBadge.className = `user-role ${currentRole === 'admin' ? 'admin' : 'tech'}`;
+      roleBadge.textContent = currentRole === 'admin' ? 'Yönetici' : 'Teknisyen';
+      roleBadge.className = 'user-role ' + (currentRole === 'admin' ? 'admin' : 'tech');
 
-      // Rol bazlı görünüm
       if (currentRole === 'admin') {
-        document.querySelectorAll('.admin-only').forEach(el => {
-          el.style.display = '';
-          el.style.removeProperty('display');
+        document.querySelectorAll('.admin-only').forEach(function(el) {
+          el.style.setProperty('display', 'block', 'important');
+        });
+        document.querySelectorAll('th.admin-only, td.admin-only').forEach(function(el) {
+          el.style.setProperty('display', 'table-cell', 'important');
         });
       }
 
-      // Konsola yaz - tarayıcı geliştirici araçlarında kontrol için
-      console.log('🔐 Kullanıcı:', currentUser.email);
-      console.log('📋 Firestore verisi:', data);
-      console.log('👤 Rol (ham):', data.rol, '→ İşlenmiş:', currentRole);
+      console.log('ROL:', currentRole, '| VERİ:', JSON.stringify(data));
     } else {
-      // Firestore'da kayıt YOK - yeni oluştur
-      console.warn('⚠️ Firestore profili bulunamadı! UID:', uid, ' — Yeni profil oluşturuluyor (technician)');
       currentRole = 'technician';
       await setDoc(doc(db, 'kullanicilar', uid), {
         email: currentUser.email,
         ad: currentUser.email.split('@')[0],
-        rol: 'technician',
-        olusturuldu: new Date().toISOString()
+        rol: 'technician'
       });
       document.getElementById('user-displayname').textContent = currentUser.email;
-      document.getElementById('user-role-badge').textContent = '🔧 Teknisyen';
-      toast('⚠️ Firestore profiliniz bulunamadı. Teknisyen olarak oluşturuldu. Firebase\'den rolünüzü admin yapın.', 'error');
+      document.getElementById('user-role-badge').textContent = 'Teknisyen';
+      alert('Firestore profili bulunamadı! Firebase Console dan kullanicilar koleksiyonuna ' + uid + ' ID si ile admin rolü ekleyin.');
     }
   } catch(e) {
-    console.error('❌ Profil yükleme hatası:', e);
+    console.error('HATA:', e);
     currentRole = 'technician';
-    toast('Profil yüklenemedi: ' + e.message, 'error');
   }
 }
+
 
 // ============================================================
 // VERİ YÜKLEME
