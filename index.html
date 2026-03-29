@@ -1846,15 +1846,13 @@ function renderBakim() {
     const waMsg = encodeURIComponent(
       `Sayın ${m?.ad || ''} ${m?.soyad || 'Müşterimiz'}, ${c.marka} ${c.model||''} cihazınızın yıllık periyodik bakım zamanı yaklaşmaktadır. Konforunuzun kesilmemesi ve cihaz ömrünün uzaması için ${fmtDate(c.sonrakibakim)} tarihine kadar randevu almanızı tavsiye ederiz. 
 
+ YILDIRIM TEKNİK 
 
+ Fatih Mah. Mehmet Akif Ersoy Cad. 108-E Sincan/ANKARA
 
-⚙️ YILDIRIM TEKNİK ⚙️
+ 0536 588 78 76
 
-📍 Fatih Mah. Mehmet Akif Ersoy Cad. 108-E Sincan/ANKARA
-
-📞 0536 588 78 76
-
-📞 0507 739 34 40`
+ 0507 739 34 40`
     )
     
     const waLink = `https://wa.me/90${tel}?text=${waMsg}`;
