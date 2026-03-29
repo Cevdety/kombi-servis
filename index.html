@@ -1844,8 +1844,19 @@ function renderBakim() {
     const diff = daysDiff(c.sonrakibakim);
     const tel = m?.tel?.replace(/[\s\-\(\)]/g, '') || '';
     const waMsg = encodeURIComponent(
-      `Sayın ${m?.ad || 'Müşterimiz'}, ${c.tur || 'cihazınız'} için periyodik bakım zamanınız yaklaşmaktadır. ${c.marka} ${c.model||''} cihazınızın bakımını ${fmtDate(c.sonrakibakim)} tarihine kadar yaptırmanızı öneririz. Randevu için bizimle iletişime geçebilirsiniz. — YILDIRIM TEKNİK`
-    );
+      `Sayın ${m?.ad || ''} ${m?.soyad || 'Müşterimiz'}, ${c.marka} ${c.model||''} cihazınızın yıllık periyodik bakım zamanı yaklaşmaktadır. Konforunuzun kesilmemesi ve cihaz ömrünün uzaması için ${fmtDate(c.sonrakibakim)} tarihine kadar randevu almanızı tavsiye ederiz. 
+
+
+
+⚙️ YILDIRIM TEKNİK ⚙️
+
+📍 Fatih Mah. Mehmet Akif Ersoy Cad. 108-E Sincan/ANKARA
+
+📞 0536 588 78 76
+
+📞 0507 739 34 40`
+    )
+    
     const waLink = `https://wa.me/90${tel}?text=${waMsg}`;
     return `<tr>
       <td><strong>${c.marka}</strong> ${c.model||''}</td>
