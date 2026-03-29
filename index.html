@@ -1743,7 +1743,7 @@ function renderBakim() {
     const diff = daysDiff(c.sonrakibakim);
     const tel = m?.tel?.replace(/[\s\-\(\)]/g, '') || '';
     const waMsg = encodeURIComponent(
-      `Sayın ${m?.ad || 'Müşterimiz'}, kombinizdeki yıllık bakım zamanınız yaklaşmaktadır. ${c.marka} ${c.model||''} kombinizi ${fmtDate(c.sonrakibakim)} tarihine kadar servise getirmenizi öneririz. Randevu için bizimle iletişime geçebilirsiniz.`
+      `Sayın ${m?.ad || 'Müşterimiz'}, cihazınızın yıllık bakım zamanınız yaklaşmaktadır. ${c.marka} ${c.model||''} kombinizi ${fmtDate(c.sonrakibakim)} tarihine kadar servisimizden randevu almanızı öneririz. Randevu için bizimle iletişime geçebilirsiniz.`
     );
     const waLink = `https://wa.me/90${tel}?text=${waMsg}`;
     return `<tr>
