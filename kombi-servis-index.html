@@ -1,0 +1,1872 @@
+
+<!DOCTYPE html>
+<html lang="tr">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0">
+<title>KombiServis Pro</title>
+<link href="https://fonts.googleapis.com/css2?family=Outfit:wght@300;400;500;600;700;800&family=JetBrains+Mono:wght@400;600&display=swap" rel="stylesheet">
+<script src="https://cdnjs.cloudflare.com/ajax/libs/jspdf/2.5.1/jspdf.umd.min.js"></script>
+<style>
+:root {
+  --bg: #0F1117;
+  --surface: #1A1D27;
+  --surface2: #22263A;
+  --border: #2E3347;
+  --accent: #4F8EF7;
+  --accent2: #7C5CF6;
+  --success: #22C55E;
+  --warning: #F59E0B;
+  --danger: #EF4444;
+  --text: #E8EAF2;
+  --muted: #7B82A0;
+  --white: #ffffff;
+  --card-shadow: 0 4px 24px rgba(0,0,0,0.4);
+  --radius: 14px;
+  --radius-sm: 8px;
+}
+* { box-sizing: border-box; margin: 0; padding: 0; }
+html, body { height: 100%; }
+body {
+  font-family: 'Outfit', sans-serif;
+  background: var(--bg);
+  color: var(--text);
+  min-height: 100vh;
+  overflow-x: hidden;
+}
+
+/* ====== LOGIN ====== */
+#login-screen {
+  min-height: 100vh;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  padding: 20px;
+  background: radial-gradient(ellipse at 60% 0%, rgba(79,142,247,0.12) 0%, transparent 60%),
+              radial-gradient(ellipse at 10% 100%, rgba(124,92,246,0.1) 0%, transparent 50%),
+              var(--bg);
+}
+.login-box {
+  background: var(--surface);
+  border: 1px solid var(--border);
+  border-radius: 24px;
+  padding: 48px 40px;
+  width: 100%;
+  max-width: 420px;
+  box-shadow: var(--card-shadow);
+}
+.login-logo {
+  text-align: center;
+  margin-bottom: 36px;
+}
+.login-logo .icon {
+  width: 64px; height: 64px;
+  background: linear-gradient(135deg, var(--accent), var(--accent2));
+  border-radius: 20px;
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  font-size: 28px;
+  margin-bottom: 16px;
+  box-shadow: 0 8px 32px rgba(79,142,247,0.3);
+}
+.login-logo h1 {
+  font-size: 1.6rem;
+  font-weight: 800;
+  letter-spacing: -0.5px;
+}
+.login-logo h1 span { color: var(--accent); }
+.login-logo p { color: var(--muted); font-size: 0.85rem; margin-top: 6px; }
+.form-group { margin-bottom: 18px; }
+.form-group label {
+  display: block;
+  font-size: 0.82rem;
+  font-weight: 600;
+  color: var(--muted);
+  margin-bottom: 8px;
+  text-transform: uppercase;
+  letter-spacing: 0.05em;
+}
+input[type=text], input[type=email], input[type=password],
+input[type=tel], input[type=number], input[type=date],
+select, textarea {
+  width: 100%;
+  background: var(--surface2);
+  border: 1.5px solid var(--border);
+  color: var(--text);
+  font-family: 'Outfit', sans-serif;
+  font-size: 0.95rem;
+  padding: 12px 16px;
+  border-radius: var(--radius-sm);
+  outline: none;
+  transition: border-color 0.2s, box-shadow 0.2s;
+}
+input:focus, select:focus, textarea:focus {
+  border-color: var(--accent);
+  box-shadow: 0 0 0 3px rgba(79,142,247,0.15);
+}
+select option { background: var(--surface2); }
+textarea { resize: vertical; min-height: 80px; }
+
+.btn {
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  gap: 8px;
+  border: none;
+  font-family: 'Outfit', sans-serif;
+  font-weight: 600;
+  font-size: 0.92rem;
+  padding: 12px 22px;
+  border-radius: var(--radius-sm);
+  cursor: pointer;
+  transition: all 0.2s;
+  white-space: nowrap;
+}
+.btn-primary {
+  background: linear-gradient(135deg, var(--accent), var(--accent2));
+  color: #fff;
+  box-shadow: 0 4px 16px rgba(79,142,247,0.3);
+}
+.btn-primary:hover { transform: translateY(-1px); box-shadow: 0 6px 20px rgba(79,142,247,0.4); }
+.btn-primary:disabled { opacity: 0.6; cursor: not-allowed; transform: none; }
+.btn-secondary { background: var(--surface2); color: var(--text); border: 1px solid var(--border); }
+.btn-secondary:hover { background: var(--border); }
+.btn-danger { background: rgba(239,68,68,0.15); color: var(--danger); border: 1px solid rgba(239,68,68,0.3); }
+.btn-danger:hover { background: rgba(239,68,68,0.25); }
+.btn-success { background: rgba(34,197,94,0.15); color: var(--success); border: 1px solid rgba(34,197,94,0.3); }
+.btn-success:hover { background: rgba(34,197,94,0.25); }
+.btn-warning { background: rgba(245,158,11,0.15); color: var(--warning); border: 1px solid rgba(245,158,11,0.3); }
+.btn-sm { padding: 7px 14px; font-size: 0.82rem; border-radius: 6px; }
+.btn-full { width: 100%; }
+.btn-icon { padding: 8px; border-radius: 8px; }
+
+.login-error {
+  background: rgba(239,68,68,0.1);
+  border: 1px solid rgba(239,68,68,0.3);
+  color: var(--danger);
+  padding: 10px 14px;
+  border-radius: var(--radius-sm);
+  font-size: 0.85rem;
+  margin-bottom: 16px;
+  display: none;
+}
+
+/* ====== APP LAYOUT ====== */
+#app { display: none; min-height: 100vh; }
+
+/* SIDEBAR */
+.sidebar {
+  position: fixed;
+  left: 0; top: 0; bottom: 0;
+  width: 240px;
+  background: var(--surface);
+  border-right: 1px solid var(--border);
+  display: flex;
+  flex-direction: column;
+  z-index: 50;
+  transition: transform 0.3s;
+}
+.sidebar-logo {
+  padding: 24px 20px 20px;
+  border-bottom: 1px solid var(--border);
+}
+.sidebar-logo .logo-icon {
+  width: 40px; height: 40px;
+  background: linear-gradient(135deg, var(--accent), var(--accent2));
+  border-radius: 12px;
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  font-size: 18px;
+  margin-bottom: 10px;
+}
+.sidebar-logo h2 {
+  font-size: 1rem;
+  font-weight: 800;
+  letter-spacing: -0.3px;
+}
+.sidebar-logo h2 span { color: var(--accent); }
+.sidebar-logo .version {
+  font-size: 0.7rem;
+  color: var(--muted);
+  font-family: 'JetBrains Mono', monospace;
+}
+
+.nav-section {
+  padding: 16px 12px 8px;
+  font-size: 0.68rem;
+  font-weight: 700;
+  color: var(--muted);
+  text-transform: uppercase;
+  letter-spacing: 0.1em;
+}
+.nav-item {
+  display: flex;
+  align-items: center;
+  gap: 12px;
+  padding: 11px 14px;
+  margin: 2px 8px;
+  border-radius: 10px;
+  cursor: pointer;
+  font-size: 0.9rem;
+  font-weight: 500;
+  color: var(--muted);
+  transition: all 0.15s;
+  border: none;
+  background: none;
+  width: calc(100% - 16px);
+  text-align: left;
+}
+.nav-item:hover { background: var(--surface2); color: var(--text); }
+.nav-item.active { background: rgba(79,142,247,0.15); color: var(--accent); font-weight: 600; }
+.nav-item .nav-icon { font-size: 1.1rem; width: 22px; text-align: center; }
+.nav-badge {
+  margin-left: auto;
+  background: var(--danger);
+  color: #fff;
+  font-size: 0.68rem;
+  font-weight: 700;
+  padding: 2px 7px;
+  border-radius: 20px;
+}
+
+.sidebar-footer {
+  margin-top: auto;
+  padding: 16px;
+  border-top: 1px solid var(--border);
+}
+.user-card {
+  display: flex;
+  align-items: center;
+  gap: 12px;
+}
+.user-avatar {
+  width: 36px; height: 36px;
+  border-radius: 10px;
+  background: linear-gradient(135deg, var(--accent), var(--accent2));
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  font-weight: 700;
+  font-size: 0.85rem;
+  color: #fff;
+  flex-shrink: 0;
+}
+.user-info { flex: 1; min-width: 0; }
+.user-name { font-size: 0.85rem; font-weight: 600; white-space: nowrap; overflow: hidden; text-overflow: ellipsis; }
+.user-role {
+  font-size: 0.7rem;
+  color: var(--muted);
+  margin-top: 1px;
+}
+.user-role.admin { color: var(--accent); }
+.user-role.tech { color: var(--success); }
+
+/* MAIN CONTENT */
+.main-content {
+  margin-left: 240px;
+  min-height: 100vh;
+  padding: 28px;
+}
+
+/* TOP BAR */
+.topbar {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  margin-bottom: 28px;
+  gap: 16px;
+}
+.topbar-left h1 {
+  font-size: 1.5rem;
+  font-weight: 800;
+  letter-spacing: -0.3px;
+}
+.topbar-left p { color: var(--muted); font-size: 0.85rem; margin-top: 2px; }
+.topbar-right { display: flex; gap: 10px; align-items: center; flex-wrap: wrap; }
+
+/* HAMBURGER (mobile) */
+.hamburger {
+  display: none;
+  background: var(--surface2);
+  border: 1px solid var(--border);
+  color: var(--text);
+  width: 40px; height: 40px;
+  border-radius: 10px;
+  cursor: pointer;
+  font-size: 1.2rem;
+  align-items: center;
+  justify-content: center;
+}
+
+/* STATS GRID */
+.stats-grid {
+  display: grid;
+  grid-template-columns: repeat(auto-fit, minmax(160px, 1fr));
+  gap: 16px;
+  margin-bottom: 28px;
+}
+.stat-card {
+  background: var(--surface);
+  border: 1px solid var(--border);
+  border-radius: var(--radius);
+  padding: 20px;
+  position: relative;
+  overflow: hidden;
+  transition: border-color 0.2s;
+}
+.stat-card::before {
+  content: '';
+  position: absolute;
+  top: 0; left: 0; right: 0;
+  height: 3px;
+  background: linear-gradient(90deg, var(--accent), var(--accent2));
+  opacity: 0;
+  transition: opacity 0.2s;
+}
+.stat-card:hover { border-color: var(--accent); }
+.stat-card:hover::before { opacity: 1; }
+.stat-icon { font-size: 1.5rem; margin-bottom: 12px; }
+.stat-num {
+  font-size: 2rem;
+  font-weight: 800;
+  font-family: 'JetBrains Mono', monospace;
+  color: var(--accent);
+  line-height: 1;
+}
+.stat-label { font-size: 0.8rem; color: var(--muted); margin-top: 6px; font-weight: 500; }
+
+/* CARDS */
+.card {
+  background: var(--surface);
+  border: 1px solid var(--border);
+  border-radius: var(--radius);
+  margin-bottom: 20px;
+}
+.card-header {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  padding: 18px 20px;
+  border-bottom: 1px solid var(--border);
+}
+.card-title {
+  font-size: 0.95rem;
+  font-weight: 700;
+  display: flex;
+  align-items: center;
+  gap: 8px;
+}
+.card-body { padding: 20px; }
+
+/* TABLE */
+.table-wrap { overflow-x: auto; }
+table { width: 100%; border-collapse: collapse; }
+th {
+  background: var(--surface2);
+  color: var(--muted);
+  font-size: 0.72rem;
+  font-weight: 700;
+  text-transform: uppercase;
+  letter-spacing: 0.07em;
+  padding: 11px 14px;
+  text-align: left;
+  white-space: nowrap;
+}
+td {
+  padding: 13px 14px;
+  border-bottom: 1px solid var(--border);
+  font-size: 0.88rem;
+  vertical-align: middle;
+}
+tr:last-child td { border-bottom: none; }
+tr:hover td { background: rgba(79,142,247,0.03); }
+
+/* BADGES */
+.badge {
+  display: inline-flex;
+  align-items: center;
+  gap: 4px;
+  font-size: 0.73rem;
+  font-weight: 600;
+  padding: 3px 10px;
+  border-radius: 20px;
+  white-space: nowrap;
+}
+.badge-blue { background: rgba(79,142,247,0.15); color: var(--accent); }
+.badge-green { background: rgba(34,197,94,0.15); color: var(--success); }
+.badge-yellow { background: rgba(245,158,11,0.15); color: var(--warning); }
+.badge-red { background: rgba(239,68,68,0.15); color: var(--danger); }
+.badge-purple { background: rgba(124,92,246,0.15); color: var(--accent2); }
+
+/* SEARCH + FILTER BAR */
+.filter-bar {
+  display: flex;
+  gap: 10px;
+  margin-bottom: 16px;
+  flex-wrap: wrap;
+  align-items: center;
+}
+.filter-bar input { max-width: 280px; padding: 9px 14px; font-size: 0.88rem; }
+.filter-bar select { max-width: 180px; padding: 9px 14px; font-size: 0.88rem; }
+
+/* GRID LAYOUT */
+.grid-2 { display: grid; grid-template-columns: 1fr 1fr; gap: 20px; }
+.form-grid { display: grid; grid-template-columns: 1fr 1fr; gap: 14px; }
+.form-grid .full { grid-column: 1 / -1; }
+
+/* PAGES */
+.page { display: none; }
+.page.active { display: block; }
+
+/* MODAL */
+.modal-bg {
+  display: none;
+  position: fixed; inset: 0;
+  background: rgba(0,0,0,0.7);
+  backdrop-filter: blur(4px);
+  z-index: 200;
+  align-items: center;
+  justify-content: center;
+  padding: 16px;
+}
+.modal-bg.open { display: flex; }
+.modal {
+  background: var(--surface);
+  border: 1px solid var(--border);
+  border-radius: 20px;
+  width: 100%;
+  max-width: 580px;
+  max-height: 90vh;
+  overflow-y: auto;
+  box-shadow: 0 24px 80px rgba(0,0,0,0.6);
+  animation: modalIn 0.25s ease;
+}
+@keyframes modalIn { from { transform: scale(0.95) translateY(20px); opacity: 0; } }
+.modal-header {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  padding: 22px 24px;
+  border-bottom: 1px solid var(--border);
+  position: sticky;
+  top: 0;
+  background: var(--surface);
+  z-index: 1;
+  border-radius: 20px 20px 0 0;
+}
+.modal-title { font-size: 1.05rem; font-weight: 700; }
+.modal-close {
+  background: var(--surface2);
+  border: 1px solid var(--border);
+  color: var(--muted);
+  width: 32px; height: 32px;
+  border-radius: 8px;
+  cursor: pointer;
+  font-size: 1rem;
+  display: flex; align-items: center; justify-content: center;
+  transition: all 0.15s;
+}
+.modal-close:hover { color: var(--text); background: var(--border); }
+.modal-body { padding: 24px; }
+.modal-footer {
+  padding: 16px 24px;
+  border-top: 1px solid var(--border);
+  display: flex;
+  gap: 10px;
+  justify-content: flex-end;
+}
+
+/* EMPTY STATE */
+.empty-state {
+  text-align: center;
+  padding: 60px 20px;
+  color: var(--muted);
+}
+.empty-state .empty-icon { font-size: 3.5rem; margin-bottom: 16px; opacity: 0.4; }
+.empty-state p { font-size: 0.95rem; }
+
+/* ALERT */
+.alert {
+  padding: 12px 16px;
+  border-radius: var(--radius-sm);
+  font-size: 0.88rem;
+  margin-bottom: 16px;
+  display: flex;
+  align-items: flex-start;
+  gap: 10px;
+}
+.alert-warning { background: rgba(245,158,11,0.1); border: 1px solid rgba(245,158,11,0.3); color: var(--warning); }
+.alert-info { background: rgba(79,142,247,0.1); border: 1px solid rgba(79,142,247,0.3); color: var(--accent); }
+
+/* TOAST */
+.toast-container {
+  position: fixed;
+  bottom: 24px; right: 24px;
+  z-index: 999;
+  display: flex;
+  flex-direction: column;
+  gap: 8px;
+}
+.toast {
+  background: var(--surface);
+  border: 1px solid var(--border);
+  padding: 13px 18px;
+  border-radius: 12px;
+  font-size: 0.88rem;
+  font-weight: 500;
+  display: flex;
+  align-items: center;
+  gap: 10px;
+  box-shadow: 0 8px 32px rgba(0,0,0,0.4);
+  animation: toastIn 0.3s ease;
+  max-width: 320px;
+}
+@keyframes toastIn { from { transform: translateX(20px); opacity: 0; } }
+.toast.success { border-left: 3px solid var(--success); }
+.toast.error { border-left: 3px solid var(--danger); }
+.toast.info { border-left: 3px solid var(--accent); }
+
+/* SIDEBAR OVERLAY (mobile) */
+.sidebar-overlay {
+  display: none;
+  position: fixed; inset: 0;
+  background: rgba(0,0,0,0.6);
+  z-index: 40;
+}
+
+/* DETAIL GRID */
+.detail-row {
+  display: grid;
+  grid-template-columns: 1fr 1fr;
+  gap: 14px;
+  margin-bottom: 14px;
+}
+.detail-item label {
+  display: block;
+  font-size: 0.72rem;
+  font-weight: 700;
+  text-transform: uppercase;
+  letter-spacing: 0.07em;
+  color: var(--muted);
+  margin-bottom: 5px;
+}
+.detail-item span { font-size: 0.92rem; font-weight: 500; }
+
+/* WHATSAPP BTN */
+.wa-btn {
+  background: rgba(37,211,102,0.15);
+  color: #25D366;
+  border: 1px solid rgba(37,211,102,0.3);
+  text-decoration: none;
+}
+.wa-btn:hover { background: rgba(37,211,102,0.25); }
+
+/* DIVIDER */
+.divider {
+  height: 1px;
+  background: var(--border);
+  margin: 20px 0;
+}
+
+/* ROLE RESTRICTED */
+.admin-only { display: none; }
+
+@media (max-width: 768px) {
+  .sidebar { transform: translateX(-100%); }
+  .sidebar.open { transform: translateX(0); }
+  .sidebar-overlay.open { display: block; }
+  .main-content { margin-left: 0; padding: 16px; }
+  .hamburger { display: flex; }
+  .grid-2 { grid-template-columns: 1fr; }
+  .form-grid { grid-template-columns: 1fr; }
+  .form-grid .full { grid-column: 1; }
+  .stats-grid { grid-template-columns: repeat(2, 1fr); }
+  .topbar { flex-wrap: wrap; }
+}
+</style>
+</head>
+<body>
+
+<!-- ======== GİRİŞ EKRANI ======== -->
+<div id="login-screen">
+  <div class="login-box">
+    <div class="login-logo">
+      <div class="icon">🔥</div>
+      <h1>Kombi<span>Servis</span></h1>
+      <p>Profesyonel Servis Yönetimi</p>
+    </div>
+    <div class="login-error" id="login-error"></div>
+    <div class="form-group">
+      <label>E-posta</label>
+      <input type="email" id="login-email" placeholder="kullanici@email.com" autocomplete="email">
+    </div>
+    <div class="form-group">
+      <label>Şifre</label>
+      <input type="password" id="login-password" placeholder="••••••••" autocomplete="current-password">
+    </div>
+    <button class="btn btn-primary btn-full" id="login-btn" onclick="doLogin()">
+      <span id="login-btn-text">Giriş Yap</span>
+    </button>
+    <p style="text-align:center;color:var(--muted);font-size:0.78rem;margin-top:20px">
+      KombiServis Pro v2.0 — Güvenli Bulut Sistemi
+    </p>
+  </div>
+</div>
+
+<!-- ======== UYGULAMA ======== -->
+<div id="app">
+  <div class="sidebar-overlay" id="sidebar-overlay" onclick="closeSidebar()"></div>
+
+  <!-- SIDEBAR -->
+  <aside class="sidebar" id="sidebar">
+    <div class="sidebar-logo">
+      <div class="logo-icon">🔥</div>
+      <h2>Kombi<span>Servis</span></h2>
+      <div class="version">Pro v2.0</div>
+    </div>
+
+    <div style="flex:1;overflow-y:auto">
+      <div class="nav-section">Ana Menü</div>
+      <button class="nav-item active" onclick="showPage('dashboard',this)">
+        <span class="nav-icon">📊</span> Özet
+      </button>
+      <button class="nav-item" onclick="showPage('isemirleri',this)">
+        <span class="nav-icon">🔧</span> İş Emirleri
+        <span class="nav-badge" id="nav-bekleyen" style="display:none">0</span>
+      </button>
+      <button class="nav-item" onclick="showPage('musteriler',this)">
+        <span class="nav-icon">👥</span> Müşteriler
+      </button>
+      <button class="nav-item" onclick="showPage('cihazlar',this)">
+        <span class="nav-icon">🏠</span> Cihazlar
+      </button>
+      <button class="nav-item" onclick="showPage('bakim',this)">
+        <span class="nav-icon">⚠️</span> Bakım Takibi
+        <span class="nav-badge" id="nav-bakim" style="display:none">0</span>
+      </button>
+      <div class="nav-section admin-only">Yönetim</div>
+      <button class="nav-item admin-only" onclick="showPage('raporlar',this)">
+        <span class="nav-icon">📈</span> Raporlar
+      </button>
+      <button class="nav-item admin-only" onclick="showPage('kullanicilar',this)">
+        <span class="nav-icon">👤</span> Kullanıcılar
+      </button>
+    </div>
+
+    <div class="sidebar-footer">
+      <div class="user-card">
+        <div class="user-avatar" id="user-avatar">?</div>
+        <div class="user-info">
+          <div class="user-name" id="user-displayname">—</div>
+          <div class="user-role" id="user-role-badge">—</div>
+        </div>
+        <button class="btn btn-icon btn-secondary" onclick="doLogout()" title="Çıkış">⏻</button>
+      </div>
+    </div>
+  </aside>
+
+  <!-- MAIN -->
+  <main class="main-content">
+    <div class="topbar">
+      <div style="display:flex;align-items:center;gap:12px">
+        <button class="hamburger" onclick="openSidebar()">☰</button>
+        <div class="topbar-left">
+          <h1 id="page-title">Özet</h1>
+          <p id="page-subtitle">Genel durum ve istatistikler</p>
+        </div>
+      </div>
+      <div class="topbar-right" id="topbar-actions"></div>
+    </div>
+
+    <!-- DASHBOARD -->
+    <div class="page active" id="page-dashboard">
+      <div class="stats-grid">
+        <div class="stat-card"><div class="stat-icon">🔧</div><div class="stat-num" id="s-toplam">0</div><div class="stat-label">Toplam İş</div></div>
+        <div class="stat-card"><div class="stat-icon">⏳</div><div class="stat-num" id="s-bekleyen" style="color:var(--warning)">0</div><div class="stat-label">Bekleyen</div></div>
+        <div class="stat-card"><div class="stat-icon">⚡</div><div class="stat-num" id="s-devam" style="color:var(--accent)">0</div><div class="stat-label">Devam Eden</div></div>
+        <div class="stat-card"><div class="stat-icon">✅</div><div class="stat-num" id="s-tamamlanan" style="color:var(--success)">0</div><div class="stat-label">Tamamlanan</div></div>
+        <div class="stat-card"><div class="stat-icon">👥</div><div class="stat-num" id="s-musteri">0</div><div class="stat-label">Müşteri</div></div>
+        <div class="stat-card admin-only"><div class="stat-icon">💰</div><div class="stat-num" id="s-gelir" style="color:var(--success)">0</div><div class="stat-label">Aylık Gelir ₺</div></div>
+      </div>
+      <div class="grid-2">
+        <div class="card">
+          <div class="card-header"><div class="card-title">🕐 Son İş Emirleri</div></div>
+          <div id="dash-son-isler"></div>
+        </div>
+        <div class="card">
+          <div class="card-header"><div class="card-title">⚠️ Yaklaşan Bakımlar</div></div>
+          <div id="dash-bakim"></div>
+        </div>
+      </div>
+    </div>
+
+    <!-- IS EMİRLERİ -->
+    <div class="page" id="page-isemirleri">
+      <div class="filter-bar">
+        <input type="text" id="search-is" placeholder="🔍 Müşteri veya arıza ara..." oninput="renderIsEmirleri()">
+        <select id="filter-durum" onchange="renderIsEmirleri()">
+          <option value="">Tüm Durumlar</option>
+          <option value="Bekliyor">Bekliyor</option>
+          <option value="Devam Ediyor">Devam Ediyor</option>
+          <option value="Tamamlandı">Tamamlandı</option>
+          <option value="İptal">İptal</option>
+        </select>
+      </div>
+      <div class="card" style="padding:0">
+        <div class="table-wrap">
+          <table>
+            <thead>
+              <tr>
+                <th>#</th><th>Müşteri</th><th>Cihaz</th><th>Arıza</th>
+                <th>Teknisyen</th><th>Tarih</th><th>Durum</th>
+                <th class="admin-only">Ücret</th><th>İşlem</th>
+              </tr>
+            </thead>
+            <tbody id="isemri-tbody"></tbody>
+          </table>
+        </div>
+      </div>
+    </div>
+
+    <!-- MÜŞTERİLER -->
+    <div class="page" id="page-musteriler">
+      <div class="filter-bar">
+        <input type="text" id="search-musteri" placeholder="🔍 Ad, telefon veya adres ara..." oninput="renderMusteriler()">
+      </div>
+      <div class="card" style="padding:0">
+        <div class="table-wrap">
+          <table>
+            <thead>
+              <tr><th>Ad Soyad</th><th>Telefon</th><th>Adres</th><th>Cihaz</th><th>İş</th><th>İşlem</th></tr>
+            </thead>
+            <tbody id="musteri-tbody"></tbody>
+          </table>
+        </div>
+      </div>
+    </div>
+
+    <!-- CİHAZLAR -->
+    <div class="page" id="page-cihazlar">
+      <div class="filter-bar">
+        <input type="text" id="search-cihaz" placeholder="🔍 Marka, model, müşteri ara..." oninput="renderCihazlar()">
+      </div>
+      <div class="card" style="padding:0">
+        <div class="table-wrap">
+          <table>
+            <thead>
+              <tr><th>Marka / Model</th><th>Müşteri</th><th>Seri No</th><th>Yıl</th><th>Son Bakım</th><th>Sonraki Bakım</th><th>İşlem</th></tr>
+            </thead>
+            <tbody id="cihaz-tbody"></tbody>
+          </table>
+        </div>
+      </div>
+    </div>
+
+    <!-- BAKIM TAKİBİ -->
+    <div class="page" id="page-bakim">
+      <div class="alert alert-warning">
+        ⚠️ Aşağıdaki cihazların bakım tarihi <strong>7 gün içinde</strong> dolmaktadır. WhatsApp ile müşterileri bildirebilirsiniz.
+      </div>
+      <div class="card" style="padding:0">
+        <div class="table-wrap">
+          <table>
+            <thead>
+              <tr><th>Cihaz</th><th>Müşteri</th><th>Telefon</th><th>Son Bakım</th><th>Sonraki Bakım</th><th>Kalan</th><th>WhatsApp</th></tr>
+            </thead>
+            <tbody id="bakim-tbody"></tbody>
+          </table>
+        </div>
+      </div>
+    </div>
+
+    <!-- RAPORLAR (admin only) -->
+    <div class="page admin-only" id="page-raporlar">
+      <div class="grid-2">
+        <div class="card">
+          <div class="card-header"><div class="card-title">📅 Aylık Özet</div></div>
+          <div class="card-body" id="rapor-aylik"></div>
+        </div>
+        <div class="card">
+          <div class="card-header"><div class="card-title">🏆 En Çok İş Müşterileri</div></div>
+          <div class="card-body" id="rapor-musteri"></div>
+        </div>
+      </div>
+      <div class="card">
+        <div class="card-header"><div class="card-title">💰 Gelir Tablosu</div></div>
+        <div class="card-body" id="rapor-gelir"></div>
+      </div>
+    </div>
+
+    <!-- KULLANICILAR (admin only) -->
+    <div class="page admin-only" id="page-kullanicilar">
+      <div class="alert alert-info">
+        ℹ️ Kullanıcı şifre değişikliği için Firebase Console'u kullanın. Buradan rol atayabilirsiniz.
+      </div>
+      <div class="card" style="padding:0">
+        <div class="table-wrap">
+          <table>
+            <thead><tr><th>E-posta</th><th>Ad</th><th>Rol</th><th>İşlem</th></tr></thead>
+            <tbody id="kullanici-tbody"></tbody>
+          </table>
+        </div>
+      </div>
+    </div>
+
+  </main>
+</div>
+
+<!-- ======== MODALLAR ======== -->
+
+<!-- İş Emri Modal -->
+<div class="modal-bg" id="modal-isemri">
+  <div class="modal">
+    <div class="modal-header">
+      <div class="modal-title" id="isemri-modal-title">Yeni İş Emri</div>
+      <button class="modal-close" onclick="closeModal('modal-isemri')">✕</button>
+    </div>
+    <div class="modal-body">
+      <div class="form-grid">
+        <div class="form-group">
+          <label>Müşteri *</label>
+          <select id="ie-musteri" onchange="loadCihazForMusteri()"><option value="">Seçin...</option></select>
+        </div>
+        <div class="form-group">
+          <label>Cihaz</label>
+          <select id="ie-cihaz"><option value="">Seçin...</option></select>
+        </div>
+        <div class="form-group full">
+          <label>Arıza Tanımı *</label>
+          <textarea id="ie-ariza" placeholder="Müşterinin bildirdiği arıza açıklaması..."></textarea>
+        </div>
+        <div class="form-group full">
+          <label>Yapılan İşlem</label>
+          <textarea id="ie-islem" placeholder="Yapılan tamir, değiştirilen parçalar..."></textarea>
+        </div>
+        <div class="form-group full">
+          <label>Kullanılan Parçalar</label>
+          <textarea id="ie-parcalar" placeholder="Parça adı - miktar - birim fiyat (her satır bir parça)"></textarea>
+        </div>
+        <div class="form-group">
+          <label>Teknisyen</label>
+          <input type="text" id="ie-teknisyen" placeholder="Ad Soyad">
+        </div>
+        <div class="form-group">
+          <label>Durum *</label>
+          <select id="ie-durum">
+            <option>Bekliyor</option>
+            <option>Devam Ediyor</option>
+            <option>Tamamlandı</option>
+            <option>İptal</option>
+          </select>
+        </div>
+        <div class="form-group">
+          <label>Tarih *</label>
+          <input type="date" id="ie-tarih">
+        </div>
+        <div class="form-group admin-only">
+          <label>İşçilik Ücreti (₺)</label>
+          <input type="number" id="ie-ucret" placeholder="0" min="0">
+        </div>
+        <div class="form-group full">
+          <label>Notlar</label>
+          <textarea id="ie-notlar" placeholder="Ek notlar..."></textarea>
+        </div>
+      </div>
+    </div>
+    <div class="modal-footer">
+      <button class="btn btn-secondary" onclick="closeModal('modal-isemri')">İptal</button>
+      <button class="btn btn-primary" onclick="saveIsEmri()">💾 Kaydet</button>
+    </div>
+    <input type="hidden" id="ie-id">
+  </div>
+</div>
+
+<!-- Müşteri Modal -->
+<div class="modal-bg" id="modal-musteri">
+  <div class="modal">
+    <div class="modal-header">
+      <div class="modal-title" id="musteri-modal-title">Yeni Müşteri</div>
+      <button class="modal-close" onclick="closeModal('modal-musteri')">✕</button>
+    </div>
+    <div class="modal-body">
+      <div class="form-grid">
+        <div class="form-group"><label>Ad *</label><input type="text" id="m-ad"></div>
+        <div class="form-group"><label>Soyad *</label><input type="text" id="m-soyad"></div>
+        <div class="form-group"><label>Telefon *</label><input type="tel" id="m-tel" placeholder="05xx xxx xx xx"></div>
+        <div class="form-group"><label>E-posta</label><input type="email" id="m-email"></div>
+        <div class="form-group full"><label>Adres</label><textarea id="m-adres" placeholder="Tam adres..."></textarea></div>
+        <div class="form-group full"><label>Notlar</label><textarea id="m-notlar"></textarea></div>
+      </div>
+    </div>
+    <div class="modal-footer">
+      <button class="btn btn-secondary" onclick="closeModal('modal-musteri')">İptal</button>
+      <button class="btn btn-primary" onclick="saveMusteri()">💾 Kaydet</button>
+    </div>
+    <input type="hidden" id="m-id">
+  </div>
+</div>
+
+<!-- Cihaz Modal -->
+<div class="modal-bg" id="modal-cihaz">
+  <div class="modal">
+    <div class="modal-header">
+      <div class="modal-title" id="cihaz-modal-title">Yeni Cihaz</div>
+      <button class="modal-close" onclick="closeModal('modal-cihaz')">✕</button>
+    </div>
+    <div class="modal-body">
+      <div class="form-grid">
+        <div class="form-group full"><label>Müşteri *</label><select id="c-musteri"><option value="">Seçin...</option></select></div>
+        <div class="form-group"><label>Marka *</label><input type="text" id="c-marka" placeholder="Vaillant, Baymak..."></div>
+        <div class="form-group"><label>Model</label><input type="text" id="c-model"></div>
+        <div class="form-group"><label>Seri No</label><input type="text" id="c-serino"></div>
+        <div class="form-group"><label>Üretim Yılı</label><input type="number" id="c-yil" min="1990" max="2030"></div>
+        <div class="form-group"><label>Son Bakım Tarihi</label><input type="date" id="c-sonbakim"></div>
+        <div class="form-group"><label>Sonraki Bakım Tarihi</label><input type="date" id="c-sonrakibakim"></div>
+        <div class="form-group full"><label>Notlar</label><textarea id="c-notlar"></textarea></div>
+      </div>
+    </div>
+    <div class="modal-footer">
+      <button class="btn btn-secondary" onclick="closeModal('modal-cihaz')">İptal</button>
+      <button class="btn btn-primary" onclick="saveCihaz()">💾 Kaydet</button>
+    </div>
+    <input type="hidden" id="c-id">
+  </div>
+</div>
+
+<!-- Detay Modal (İş Emri) -->
+<div class="modal-bg" id="modal-detay">
+  <div class="modal" style="max-width:640px">
+    <div class="modal-header">
+      <div class="modal-title" id="detay-title">İş Emri Detayı</div>
+      <button class="modal-close" onclick="closeModal('modal-detay')">✕</button>
+    </div>
+    <div class="modal-body" id="detay-body"></div>
+    <div class="modal-footer" id="detay-footer"></div>
+  </div>
+</div>
+
+<!-- Toast Container -->
+<div class="toast-container" id="toast-container"></div>
+
+<!-- ======== FIREBASE + APP LOGIC ======== -->
+<script type="module">
+// ============================================================
+// FIREBASE IMPORT
+// ============================================================
+import { initializeApp } from "https://www.gstatic.com/firebasejs/10.12.0/firebase-app.js";
+import {
+  getAuth, signInWithEmailAndPassword, signOut, onAuthStateChanged
+} from "https://www.gstatic.com/firebasejs/10.12.0/firebase-auth.js";
+import {
+  getFirestore, collection, doc, getDocs, getDoc,
+  addDoc, setDoc, updateDoc, deleteDoc, query, orderBy, where, Timestamp
+} from "https://www.gstatic.com/firebasejs/10.12.0/firebase-firestore.js";
+
+// ============================================================
+// YAPILANDIRMA — firebase-config.js dosyasından import edilir
+// Aşağıya kendi Firebase bilgilerinizi girin
+// ============================================================
+const firebaseConfig = {
+  apiKey: "AIzaSyDzU_vo8biqRGfGZe6Ur8_eVxIdHSI3fQk",
+  authDomain: "yildirim-teknik-55e76.firebaseapp.com",
+  projectId: "yildirim-teknik-55e76",
+  storageBucket: "yildirim-teknik-55e76.firebasestorage.app",
+  messagingSenderId: "453892167954",
+  appId: "1:453892167954:web:84ef027dfa1ca493e8fbcb"
+};
+
+const app = initializeApp(firebaseConfig);
+const auth = getAuth(app);
+const db = getFirestore(app);
+
+// ============================================================
+// STATE
+// ============================================================
+let currentUser = null;
+let currentRole = null; // 'admin' | 'technician'
+let cache = { musteriler: [], cihazlar: [], isemirleri: [], kullanicilar: [] };
+
+// ============================================================
+// GİRİŞ / ÇIKIŞ
+// ============================================================
+window.doLogin = async () => {
+  const email = document.getElementById('login-email').value.trim();
+  const pass = document.getElementById('login-password').value;
+  const errEl = document.getElementById('login-error');
+  const btn = document.getElementById('login-btn');
+  errEl.style.display = 'none';
+  btn.disabled = true;
+  document.getElementById('login-btn-text').textContent = 'Giriş yapılıyor...';
+  try {
+    await signInWithEmailAndPassword(auth, email, pass);
+  } catch(e) {
+    errEl.textContent = 'E-posta veya şifre hatalı. Lütfen tekrar deneyin.';
+    errEl.style.display = 'block';
+    btn.disabled = false;
+    document.getElementById('login-btn-text').textContent = 'Giriş Yap';
+  }
+};
+
+window.doLogout = async () => {
+  await signOut(auth);
+};
+
+// Enter ile giriş
+document.getElementById('login-password').addEventListener('keydown', e => {
+  if (e.key === 'Enter') window.doLogin();
+});
+
+onAuthStateChanged(auth, async (user) => {
+  if (user) {
+    currentUser = user;
+    await loadUserProfile(user.uid);
+    document.getElementById('login-screen').style.display = 'none';
+    document.getElementById('app').style.display = 'block';
+    await loadAllData();
+    renderDashboard();
+  } else {
+    currentUser = null;
+    currentRole = null;
+    document.getElementById('login-screen').style.display = 'flex';
+    document.getElementById('app').style.display = 'none';
+    document.getElementById('login-btn').disabled = false;
+    document.getElementById('login-btn-text').textContent = 'Giriş Yap';
+  }
+});
+
+async function loadUserProfile(uid) {
+  try {
+    const snap = await getDoc(doc(db, 'kullanicilar', uid));
+    if (snap.exists()) {
+      const data = snap.data();
+      currentRole = data.rol || 'technician';
+      const name = data.ad || currentUser.email;
+      document.getElementById('user-displayname').textContent = name;
+      document.getElementById('user-avatar').textContent = name.charAt(0).toUpperCase();
+      const roleBadge = document.getElementById('user-role-badge');
+      roleBadge.textContent = currentRole === 'admin' ? 'Yönetici' : 'Teknisyen';
+      roleBadge.className = `user-role ${currentRole === 'admin' ? 'admin' : 'tech'}`;
+
+      // Rol bazlı görünüm
+      if (currentRole === 'admin') {
+        document.querySelectorAll('.admin-only').forEach(el => el.style.display = '');
+      }
+    } else {
+      // Profil yoksa oluştur (ilk giriş)
+      currentRole = 'technician';
+      await setDoc(doc(db, 'kullanicilar', uid), {
+        email: currentUser.email, ad: currentUser.email.split('@')[0], rol: 'technician'
+      });
+      document.getElementById('user-displayname').textContent = currentUser.email;
+      document.getElementById('user-role-badge').textContent = 'Teknisyen';
+    }
+  } catch(e) { console.error(e); currentRole = 'technician'; }
+}
+
+// ============================================================
+// VERİ YÜKLEME
+// ============================================================
+async function loadAllData() {
+  const [mSnap, cSnap, iSnap, kSnap] = await Promise.all([
+    getDocs(query(collection(db, 'musteriler'), orderBy('ad'))),
+    getDocs(query(collection(db, 'cihazlar'), orderBy('marka'))),
+    getDocs(query(collection(db, 'isemirleri'), orderBy('tarih', 'desc'))),
+    getDocs(collection(db, 'kullanicilar'))
+  ]);
+  cache.musteriler = mSnap.docs.map(d => ({ id: d.id, ...d.data() }));
+  cache.cihazlar = cSnap.docs.map(d => ({ id: d.id, ...d.data() }));
+  cache.isemirleri = iSnap.docs.map(d => ({ id: d.id, ...d.data() }));
+  cache.kullanicilar = kSnap.docs.map(d => ({ id: d.id, ...d.data() }));
+  updateBadges();
+}
+
+function updateBadges() {
+  const bekleyen = cache.isemirleri.filter(i => i.durum === 'Bekliyor').length;
+  const bakim = getBakimList().length;
+  const nb = document.getElementById('nav-bekleyen');
+  const nb2 = document.getElementById('nav-bakim');
+  nb.style.display = bekleyen > 0 ? '' : 'none';
+  nb.textContent = bekleyen;
+  nb2.style.display = bakim > 0 ? '' : 'none';
+  nb2.textContent = bakim;
+}
+
+// ============================================================
+// YARDIMCI
+// ============================================================
+function musteriAd(id) {
+  const m = cache.musteriler.find(x => x.id === id);
+  return m ? `${m.ad} ${m.soyad}` : '—';
+}
+function cihazAd(id) {
+  const c = cache.cihazlar.find(x => x.id === id);
+  return c ? `${c.marka} ${c.model || ''}`.trim() : '—';
+}
+function fmtDate(d) {
+  if (!d) return '—';
+  const [y, m, g] = d.split('-');
+  return `${g}.${m}.${y}`;
+}
+function today() { return new Date().toISOString().split('T')[0]; }
+function daysDiff(dateStr) {
+  if (!dateStr) return null;
+  const d = new Date(dateStr);
+  const now = new Date(); now.setHours(0,0,0,0);
+  return Math.round((d - now) / 86400000);
+}
+
+function durumBadge(d) {
+  const map = { 'Bekliyor': 'badge-yellow', 'Devam Ediyor': 'badge-blue', 'Tamamlandı': 'badge-green', 'İptal': 'badge-red' };
+  return `<span class="badge ${map[d] || 'badge-purple'}">${d}</span>`;
+}
+
+function getBakimList() {
+  return cache.cihazlar.filter(c => {
+    if (!c.sonrakibakim) return false;
+    const diff = daysDiff(c.sonrakibakim);
+    return diff !== null && diff <= 7 && diff >= 0;
+  });
+}
+
+// ============================================================
+// SAYFA NAVIGASYON
+// ============================================================
+window.showPage = function(p, btn) {
+  document.querySelectorAll('.page').forEach(el => el.classList.remove('active'));
+  document.querySelectorAll('.nav-item').forEach(el => el.classList.remove('active'));
+  document.getElementById('page-' + p).classList.add('active');
+  if (btn) btn.classList.add('active');
+  const titles = {
+    dashboard: ['Özet', 'Genel durum ve istatistikler'],
+    isemirleri: ['İş Emirleri', 'Tüm servis kayıtları'],
+    musteriler: ['Müşteriler', 'Müşteri veritabanı'],
+    cihazlar: ['Cihazlar', 'Kayıtlı kombiler ve cihazlar'],
+    bakim: ['Bakım Takibi', '7 gün içinde bakımı dolacak cihazlar'],
+    raporlar: ['Raporlar', 'İstatistik ve gelir raporları'],
+    kullanicilar: ['Kullanıcılar', 'Sistem kullanıcıları ve roller']
+  };
+  const [t, s] = titles[p] || ['', ''];
+  document.getElementById('page-title').textContent = t;
+  document.getElementById('page-subtitle').textContent = s;
+
+  // Topbar actions
+  const actions = document.getElementById('topbar-actions');
+  actions.innerHTML = '';
+  if (p === 'isemirleri') {
+    actions.innerHTML = `<button class="btn btn-primary" onclick="openIsEmriModal()">+ Yeni İş Emri</button>`;
+  } else if (p === 'musteriler') {
+    actions.innerHTML = `<button class="btn btn-primary" onclick="openMusteriModal()">+ Yeni Müşteri</button>`;
+  } else if (p === 'cihazlar') {
+    actions.innerHTML = `<button class="btn btn-primary" onclick="openCihazModal()">+ Yeni Cihaz</button>`;
+  }
+
+  const renders = {
+    dashboard: renderDashboard, isemirleri: renderIsEmirleri,
+    musteriler: renderMusteriler, cihazlar: renderCihazlar,
+    bakim: renderBakim, raporlar: renderRaporlar, kullanicilar: renderKullanicilar
+  };
+  renders[p] && renders[p]();
+  closeSidebar();
+};
+
+// ============================================================
+// DASHBOARD
+// ============================================================
+function renderDashboard() {
+  const isler = cache.isemirleri;
+  const now = new Date();
+  const ayBaslangic = new Date(now.getFullYear(), now.getMonth(), 1).toISOString().split('T')[0];
+  document.getElementById('s-toplam').textContent = isler.length;
+  document.getElementById('s-bekleyen').textContent = isler.filter(i => i.durum === 'Bekliyor').length;
+  document.getElementById('s-devam').textContent = isler.filter(i => i.durum === 'Devam Ediyor').length;
+  document.getElementById('s-tamamlanan').textContent = isler.filter(i => i.durum === 'Tamamlandı').length;
+  document.getElementById('s-musteri').textContent = cache.musteriler.length;
+  if (currentRole === 'admin') {
+    const gelir = isler.filter(i => i.durum === 'Tamamlandı' && i.tarih >= ayBaslangic)
+      .reduce((s, i) => s + (parseFloat(i.ucret) || 0), 0);
+    document.getElementById('s-gelir').textContent = gelir.toLocaleString('tr-TR');
+  }
+
+  // Son işler
+  const son = isler.slice(0, 6);
+  document.getElementById('dash-son-isler').innerHTML = son.length ? son.map(i => `
+    <div style="display:flex;align-items:center;gap:12px;padding:13px 20px;border-bottom:1px solid var(--border)">
+      <div style="flex:1;min-width:0">
+        <div style="font-weight:600;font-size:0.88rem">${musteriAd(i.musteriId)}</div>
+        <div style="color:var(--muted);font-size:0.78rem;margin-top:2px;white-space:nowrap;overflow:hidden;text-overflow:ellipsis">${i.ariza}</div>
+      </div>
+      <div style="text-align:right;flex-shrink:0">
+        ${durumBadge(i.durum)}
+        <div style="color:var(--muted);font-size:0.72rem;margin-top:4px">${fmtDate(i.tarih)}</div>
+      </div>
+    </div>
+  `).join('') : '<div class="empty-state" style="padding:30px"><div class="empty-icon">📋</div><p>Henüz iş emri yok</p></div>';
+
+  // Bakım
+  const bakimList = getBakimList();
+  document.getElementById('dash-bakim').innerHTML = bakimList.length ? bakimList.map(c => {
+    const diff = daysDiff(c.sonrakibakim);
+    return `
+    <div style="display:flex;align-items:center;gap:12px;padding:13px 20px;border-bottom:1px solid var(--border)">
+      <div style="flex:1;min-width:0">
+        <div style="font-weight:600;font-size:0.88rem">${c.marka} ${c.model || ''}</div>
+        <div style="color:var(--muted);font-size:0.78rem;margin-top:2px">${musteriAd(c.musteriId)}</div>
+      </div>
+      <span class="badge ${diff <= 2 ? 'badge-red' : 'badge-yellow'}">${diff === 0 ? 'Bugün!' : diff + ' gün'}</span>
+    </div>`;
+  }).join('') : '<div class="empty-state" style="padding:30px"><div class="empty-icon">✅</div><p>Yaklaşan bakım yok</p></div>';
+
+  updateBadges();
+}
+
+// ============================================================
+// IS EMİRLERİ
+// ============================================================
+function renderIsEmirleri() {
+  const q = (document.getElementById('search-is')?.value || '').toLowerCase();
+  const df = document.getElementById('filter-durum')?.value || '';
+  const isler = cache.isemirleri.filter(i => {
+    const mAd = musteriAd(i.musteriId).toLowerCase();
+    const cAd = cihazAd(i.cihazId).toLowerCase();
+    return (!q || mAd.includes(q) || cAd.includes(q) || (i.ariza||'').toLowerCase().includes(q))
+      && (!df || i.durum === df);
+  });
+  const isAdmin = currentRole === 'admin';
+  const tbody = document.getElementById('isemri-tbody');
+  if (!isler.length) {
+    tbody.innerHTML = `<tr><td colspan="${isAdmin ? 9 : 8}"><div class="empty-state"><div class="empty-icon">🔧</div><p>İş emri bulunamadı</p></div></td></tr>`;
+    return;
+  }
+  tbody.innerHTML = isler.map(i => `
+    <tr>
+      <td style="color:var(--muted);font-family:'JetBrains Mono',monospace;font-size:0.78rem">#${i.id.slice(-5)}</td>
+      <td><strong>${musteriAd(i.musteriId)}</strong></td>
+      <td style="color:var(--muted)">${cihazAd(i.cihazId)}</td>
+      <td style="max-width:180px;white-space:nowrap;overflow:hidden;text-overflow:ellipsis">${i.ariza||''}</td>
+      <td style="color:var(--muted)">${i.teknisyen||'—'}</td>
+      <td style="color:var(--muted)">${fmtDate(i.tarih)}</td>
+      <td>${durumBadge(i.durum)}</td>
+      ${isAdmin ? `<td style="color:var(--success);font-weight:600">${i.ucret ? parseFloat(i.ucret).toLocaleString('tr-TR') + ' ₺' : '—'}</td>` : ''}
+      <td>
+        <div style="display:flex;gap:6px">
+          <button class="btn btn-sm btn-secondary" onclick="showIsEmriDetay('${i.id}')">👁</button>
+          <button class="btn btn-sm btn-primary" onclick="editIsEmri('${i.id}')">✏️</button>
+          ${isAdmin ? `<button class="btn btn-sm btn-danger" onclick="deleteIsEmri('${i.id}')">🗑</button>` : ''}
+        </div>
+      </td>
+    </tr>
+  `).join('');
+}
+
+window.openIsEmriModal = function(ie) {
+  document.getElementById('isemri-modal-title').textContent = ie ? 'İş Emri Düzenle' : 'Yeni İş Emri';
+  document.getElementById('ie-id').value = ie ? ie.id : '';
+  document.getElementById('ie-ariza').value = ie?.ariza || '';
+  document.getElementById('ie-islem').value = ie?.islem || '';
+  document.getElementById('ie-parcalar').value = ie?.parcalar || '';
+  document.getElementById('ie-durum').value = ie?.durum || 'Bekliyor';
+  document.getElementById('ie-teknisyen').value = ie?.teknisyen || '';
+  document.getElementById('ie-tarih').value = ie?.tarih || today();
+  document.getElementById('ie-ucret').value = ie?.ucret || '';
+  document.getElementById('ie-notlar').value = ie?.notlar || '';
+  // Müşteri select
+  const mSel = document.getElementById('ie-musteri');
+  mSel.innerHTML = '<option value="">Seçin...</option>' + cache.musteriler.map(m =>
+    `<option value="${m.id}" ${m.id === ie?.musteriId ? 'selected' : ''}>${m.ad} ${m.soyad}</option>`
+  ).join('');
+  loadCihazForMusteri(ie?.musteriId, ie?.cihazId);
+  openModal('modal-isemri');
+};
+
+window.loadCihazForMusteri = function(musteriId, selectedCihazId) {
+  const mid = musteriId || document.getElementById('ie-musteri').value;
+  const cihazlar = mid ? cache.cihazlar.filter(c => c.musteriId === mid) : cache.cihazlar;
+  const cSel = document.getElementById('ie-cihaz');
+  cSel.innerHTML = '<option value="">Seçin...</option>' + cihazlar.map(c =>
+    `<option value="${c.id}" ${c.id === selectedCihazId ? 'selected' : ''}>${c.marka} ${c.model||''}</option>`
+  ).join('');
+};
+
+window.editIsEmri = function(id) {
+  const ie = cache.isemirleri.find(i => i.id === id);
+  window.openIsEmriModal(ie);
+};
+
+window.saveIsEmri = async function() {
+  const ariza = document.getElementById('ie-ariza').value.trim();
+  const musteriId = document.getElementById('ie-musteri').value;
+  if (!ariza || !musteriId) { toast('Müşteri ve arıza tanımı zorunludur!', 'error'); return; }
+  const obj = {
+    musteriId,
+    cihazId: document.getElementById('ie-cihaz').value || null,
+    ariza,
+    islem: document.getElementById('ie-islem').value.trim(),
+    parcalar: document.getElementById('ie-parcalar').value.trim(),
+    durum: document.getElementById('ie-durum').value,
+    teknisyen: document.getElementById('ie-teknisyen').value.trim(),
+    tarih: document.getElementById('ie-tarih').value,
+    ucret: parseFloat(document.getElementById('ie-ucret').value) || 0,
+    notlar: document.getElementById('ie-notlar').value.trim(),
+    guncellendi: new Date().toISOString()
+  };
+  const editId = document.getElementById('ie-id').value;
+  try {
+    if (editId) {
+      await updateDoc(doc(db, 'isemirleri', editId), obj);
+      const idx = cache.isemirleri.findIndex(i => i.id === editId);
+      cache.isemirleri[idx] = { id: editId, ...obj };
+    } else {
+      obj.olusturuldu = new Date().toISOString();
+      const ref = await addDoc(collection(db, 'isemirleri'), obj);
+      cache.isemirleri.unshift({ id: ref.id, ...obj });
+    }
+    closeModal('modal-isemri');
+    renderIsEmirleri();
+    renderDashboard();
+    toast('İş emri kaydedildi ✓', 'success');
+  } catch(e) { toast('Kayıt hatası: ' + e.message, 'error'); }
+};
+
+window.deleteIsEmri = async function(id) {
+  if (!confirm('Bu iş emri silinsin mi?')) return;
+  await deleteDoc(doc(db, 'isemirleri', id));
+  cache.isemirleri = cache.isemirleri.filter(i => i.id !== id);
+  renderIsEmirleri();
+  renderDashboard();
+  toast('Silindi', 'success');
+};
+
+// ============================================================
+// IS EMRİ DETAY + PDF
+// ============================================================
+window.showIsEmriDetay = function(id) {
+  const i = cache.isemirleri.find(x => x.id === id);
+  const m = cache.musteriler.find(x => x.id === i.musteriId);
+  const c = cache.cihazlar.find(x => x.id === i.cihazId);
+  const isAdmin = currentRole === 'admin';
+
+  document.getElementById('detay-title').textContent = `İş Emri #${i.id.slice(-6).toUpperCase()}`;
+  document.getElementById('detay-body').innerHTML = `
+    <div class="detail-row">
+      <div class="detail-item"><label>Müşteri</label><span>${m ? m.ad+' '+m.soyad : '—'}</span></div>
+      <div class="detail-item"><label>Telefon</label><span>${m?.tel || '—'}</span></div>
+      <div class="detail-item"><label>Cihaz</label><span>${c ? c.marka+' '+(c.model||'') : '—'}</span></div>
+      <div class="detail-item"><label>Seri No</label><span>${c?.serino || '—'}</span></div>
+      <div class="detail-item"><label>Teknisyen</label><span>${i.teknisyen || '—'}</span></div>
+      <div class="detail-item"><label>Tarih</label><span>${fmtDate(i.tarih)}</span></div>
+      <div class="detail-item"><label>Durum</label><span>${durumBadge(i.durum)}</span></div>
+      ${isAdmin ? `<div class="detail-item"><label>Ücret</label><span style="color:var(--success);font-weight:700">${i.ucret ? parseFloat(i.ucret).toLocaleString('tr-TR')+' ₺' : '—'}</span></div>` : ''}
+    </div>
+    <div class="divider"></div>
+    <div style="margin-bottom:14px"><label style="font-size:0.72rem;font-weight:700;text-transform:uppercase;letter-spacing:0.07em;color:var(--muted);display:block;margin-bottom:8px">Arıza Tanımı</label>
+    <div style="background:var(--surface2);padding:12px;border-radius:8px;font-size:0.9rem">${i.ariza}</div></div>
+    ${i.islem ? `<div style="margin-bottom:14px"><label style="font-size:0.72rem;font-weight:700;text-transform:uppercase;letter-spacing:0.07em;color:var(--muted);display:block;margin-bottom:8px">Yapılan İşlem</label><div style="background:var(--surface2);padding:12px;border-radius:8px;font-size:0.9rem">${i.islem}</div></div>` : ''}
+    ${i.parcalar ? `<div style="margin-bottom:14px"><label style="font-size:0.72rem;font-weight:700;text-transform:uppercase;letter-spacing:0.07em;color:var(--muted);display:block;margin-bottom:8px">Kullanılan Parçalar</label><div style="background:var(--surface2);padding:12px;border-radius:8px;font-size:0.9rem;white-space:pre-line">${i.parcalar}</div></div>` : ''}
+    ${i.notlar ? `<div><label style="font-size:0.72rem;font-weight:700;text-transform:uppercase;letter-spacing:0.07em;color:var(--muted);display:block;margin-bottom:8px">Notlar</label><div style="background:var(--surface2);padding:12px;border-radius:8px;font-size:0.9rem">${i.notlar}</div></div>` : ''}
+  `;
+  document.getElementById('detay-footer').innerHTML = `
+    <button class="btn btn-secondary" onclick="closeModal('modal-detay')">Kapat</button>
+    <button class="btn btn-warning" onclick="editIsEmri('${id}');closeModal('modal-detay')">✏️ Düzenle</button>
+    <button class="btn btn-primary" onclick="generatePDF('${id}')">📄 PDF İndir</button>
+  `;
+  openModal('modal-detay');
+};
+
+// ============================================================
+// PDF OLUŞTURMA
+// ============================================================
+window.generatePDF = function(isEmriId) {
+  const { jsPDF } = window.jspdf;
+  const i = cache.isemirleri.find(x => x.id === isEmriId);
+  const m = cache.musteriler.find(x => x.id === i.musteriId);
+  const c = cache.cihazlar.find(x => x.id === i.cihazId);
+
+  const pdf = new jsPDF({ orientation: 'p', unit: 'mm', format: 'a4' });
+  const W = 210; const margin = 20;
+  let y = 20;
+
+  // Renk paleti
+  const blue = [79, 142, 247];
+  const dark = [26, 29, 39];
+  const gray = [123, 130, 160];
+  const white = [255, 255, 255];
+  const green = [34, 197, 94];
+
+  // Header arka planı
+  pdf.setFillColor(...blue);
+  pdf.rect(0, 0, W, 48, 'F');
+
+  // Logo alanı
+  pdf.setFillColor(255, 255, 255, 30);
+  pdf.roundedRect(margin, 10, 30, 30, 4, 4, 'F');
+
+  // Firma adı
+  pdf.setTextColor(...white);
+  pdf.setFont('helvetica', 'bold');
+  pdf.setFontSize(20);
+  pdf.text('KombiServis Pro', margin + 34, 24);
+  pdf.setFontSize(9);
+  pdf.setFont('helvetica', 'normal');
+  pdf.text('Profesyonel Kombi Servis Hizmetleri', margin + 34, 31);
+
+  // Sağ üst: belge no ve tarih
+  pdf.setFont('helvetica', 'bold');
+  pdf.setFontSize(10);
+  pdf.text(`İŞ EMRİ`, W - margin, 18, { align: 'right' });
+  pdf.setFont('helvetica', 'normal');
+  pdf.setFontSize(8);
+  pdf.text(`#${i.id.slice(-8).toUpperCase()}`, W - margin, 25, { align: 'right' });
+  pdf.text(`Tarih: ${fmtDate(i.tarih)}`, W - margin, 31, { align: 'right' });
+
+  y = 58;
+
+  // Durum badge
+  const durumRenk = { 'Tamamlandı': [34,197,94], 'Bekliyor': [245,158,11], 'Devam Ediyor': [79,142,247], 'İptal': [239,68,68] };
+  const dr = durumRenk[i.durum] || blue;
+  pdf.setFillColor(...dr);
+  pdf.roundedRect(W - margin - 36, y - 8, 36, 10, 3, 3, 'F');
+  pdf.setTextColor(...white);
+  pdf.setFont('helvetica', 'bold');
+  pdf.setFontSize(8);
+  pdf.text(i.durum, W - margin - 18, y - 1, { align: 'center' });
+
+  // MÜŞTERİ BİLGİLERİ
+  pdf.setTextColor(...blue);
+  pdf.setFont('helvetica', 'bold');
+  pdf.setFontSize(10);
+  pdf.text('MÜŞTERİ BİLGİLERİ', margin, y);
+  y += 4;
+  pdf.setDrawColor(...blue);
+  pdf.setLineWidth(0.5);
+  pdf.line(margin, y, W - margin, y);
+  y += 7;
+
+  function field(label, value, x, colW) {
+    pdf.setTextColor(...gray);
+    pdf.setFont('helvetica', 'normal');
+    pdf.setFontSize(7.5);
+    pdf.text(label, x, y);
+    pdf.setTextColor(...dark);
+    pdf.setFont('helvetica', 'bold');
+    pdf.setFontSize(9);
+    pdf.text(value || '—', x, y + 5);
+    return y + 5;
+  }
+
+  const col1 = margin, col2 = margin + 90;
+  field('Ad Soyad', m ? `${m.ad} ${m.soyad}` : '—', col1, 85);
+  field('Telefon', m?.tel || '—', col2, 85);
+  y += 13;
+  if (m?.adres) { field('Adres', m.adres, col1, 85); y += 13; }
+
+  // CİHAZ BİLGİLERİ
+  pdf.setTextColor(...blue);
+  pdf.setFont('helvetica', 'bold');
+  pdf.setFontSize(10);
+  pdf.text('CİHAZ BİLGİLERİ', margin, y);
+  y += 4;
+  pdf.setDrawColor(...blue);
+  pdf.line(margin, y, W - margin, y);
+  y += 7;
+
+  if (c) {
+    field('Marka / Model', `${c.marka} ${c.model || ''}`, col1, 85);
+    field('Seri No', c.serino || '—', col2, 85);
+    y += 13;
+    field('Üretim Yılı', c.yil ? String(c.yil) : '—', col1, 85);
+    field('Son Bakım', fmtDate(c.sonbakim), col2, 85);
+    y += 13;
+  } else {
+    pdf.setTextColor(...gray);
+    pdf.setFontSize(9);
+    pdf.text('Cihaz kaydı yok', col1, y);
+    y += 10;
+  }
+
+  // ARIZA & İŞLEM
+  function section(title, content) {
+    y += 3;
+    pdf.setTextColor(...blue);
+    pdf.setFont('helvetica', 'bold');
+    pdf.setFontSize(10);
+    pdf.text(title, margin, y);
+    y += 4;
+    pdf.setDrawColor(...blue);
+    pdf.line(margin, y, W - margin, y);
+    y += 7;
+    pdf.setFillColor(245, 246, 250);
+    const lines = pdf.splitTextToSize(content, W - 2 * margin - 8);
+    const boxH = lines.length * 5.5 + 8;
+    pdf.roundedRect(margin, y - 3, W - 2 * margin, boxH, 3, 3, 'F');
+    pdf.setTextColor(...dark);
+    pdf.setFont('helvetica', 'normal');
+    pdf.setFontSize(9);
+    pdf.text(lines, margin + 4, y + 2);
+    y += boxH + 5;
+  }
+
+  section('ARIZA TANIMI', i.ariza || '—');
+  if (i.islem) section('YAPILAN İŞLEM', i.islem);
+  if (i.parcalar) section('KULLANILAN PARÇALAR', i.parcalar);
+
+  // ÜCRET (admin için)
+  if (currentRole === 'admin' && i.ucret) {
+    y += 3;
+    pdf.setFillColor(...blue);
+    pdf.roundedRect(margin, y, W - 2 * margin, 14, 3, 3, 'F');
+    pdf.setTextColor(...white);
+    pdf.setFont('helvetica', 'bold');
+    pdf.setFontSize(11);
+    pdf.text('TOPLAM ÜCRET', margin + 6, y + 9);
+    pdf.text(`${parseFloat(i.ucret).toLocaleString('tr-TR')} ₺`, W - margin - 6, y + 9, { align: 'right' });
+    y += 22;
+  }
+
+  // NOT
+  if (i.notlar) {
+    pdf.setTextColor(...gray);
+    pdf.setFont('helvetica', 'italic');
+    pdf.setFontSize(8.5);
+    const notLines = pdf.splitTextToSize('Not: ' + i.notlar, W - 2 * margin);
+    pdf.text(notLines, margin, y);
+    y += notLines.length * 5 + 5;
+  }
+
+  // Footer
+  const pageH = 297;
+  pdf.setFillColor(...dark);
+  pdf.rect(0, pageH - 16, W, 16, 'F');
+  pdf.setTextColor(...gray);
+  pdf.setFont('helvetica', 'normal');
+  pdf.setFontSize(8);
+  pdf.text('KombiServis Pro — Profesyonel Servis Yönetimi', margin, pageH - 6);
+  pdf.text(`Oluşturulma: ${new Date().toLocaleDateString('tr-TR')}`, W - margin, pageH - 6, { align: 'right' });
+
+  pdf.save(`is-emri-${i.id.slice(-6)}.pdf`);
+  toast('PDF indirildi ✓', 'success');
+};
+
+// ============================================================
+// MÜŞTERİLER
+// ============================================================
+function renderMusteriler() {
+  const q = (document.getElementById('search-musteri')?.value || '').toLowerCase();
+  const liste = cache.musteriler.filter(m =>
+    !q || `${m.ad} ${m.soyad}`.toLowerCase().includes(q) || m.tel?.includes(q) || m.adres?.toLowerCase().includes(q)
+  );
+  const isAdmin = currentRole === 'admin';
+  const tbody = document.getElementById('musteri-tbody');
+  if (!liste.length) {
+    tbody.innerHTML = '<tr><td colspan="6"><div class="empty-state"><div class="empty-icon">👥</div><p>Müşteri bulunamadı</p></div></td></tr>';
+    return;
+  }
+  tbody.innerHTML = liste.map(m => {
+    const is = cache.isemirleri.filter(i => i.musteriId === m.id).length;
+    const cihaz = cache.cihazlar.filter(c => c.musteriId === m.id).length;
+    return `<tr>
+      <td><strong>${m.ad} ${m.soyad}</strong></td>
+      <td><a href="tel:${m.tel}" style="color:var(--accent);text-decoration:none">📞 ${m.tel}</a></td>
+      <td style="color:var(--muted);max-width:160px;white-space:nowrap;overflow:hidden;text-overflow:ellipsis">${m.adres||'—'}</td>
+      <td><span class="badge badge-purple">${cihaz} cihaz</span></td>
+      <td><span class="badge badge-blue">${is} iş</span></td>
+      <td>
+        <div style="display:flex;gap:6px">
+          <button class="btn btn-sm btn-primary" onclick="editMusteri('${m.id}')">✏️</button>
+          ${isAdmin ? `<button class="btn btn-sm btn-danger" onclick="deleteMusteri('${m.id}')">🗑</button>` : ''}
+        </div>
+      </td>
+    </tr>`;
+  }).join('');
+}
+
+window.openMusteriModal = function(m) {
+  document.getElementById('musteri-modal-title').textContent = m ? 'Müşteri Düzenle' : 'Yeni Müşteri';
+  document.getElementById('m-id').value = m?.id || '';
+  document.getElementById('m-ad').value = m?.ad || '';
+  document.getElementById('m-soyad').value = m?.soyad || '';
+  document.getElementById('m-tel').value = m?.tel || '';
+  document.getElementById('m-email').value = m?.email || '';
+  document.getElementById('m-adres').value = m?.adres || '';
+  document.getElementById('m-notlar').value = m?.notlar || '';
+  openModal('modal-musteri');
+};
+
+window.editMusteri = function(id) {
+  window.openMusteriModal(cache.musteriler.find(m => m.id === id));
+};
+
+window.saveMusteri = async function() {
+  const ad = document.getElementById('m-ad').value.trim();
+  const tel = document.getElementById('m-tel').value.trim();
+  if (!ad || !tel) { toast('Ad ve telefon zorunludur!', 'error'); return; }
+  const obj = {
+    ad, soyad: document.getElementById('m-soyad').value.trim(),
+    tel, email: document.getElementById('m-email').value.trim(),
+    adres: document.getElementById('m-adres').value.trim(),
+    notlar: document.getElementById('m-notlar').value.trim(),
+    guncellendi: new Date().toISOString()
+  };
+  const editId = document.getElementById('m-id').value;
+  try {
+    if (editId) {
+      await updateDoc(doc(db, 'musteriler', editId), obj);
+      const idx = cache.musteriler.findIndex(m => m.id === editId);
+      cache.musteriler[idx] = { id: editId, ...obj };
+    } else {
+      obj.olusturuldu = new Date().toISOString();
+      const ref = await addDoc(collection(db, 'musteriler'), obj);
+      cache.musteriler.push({ id: ref.id, ...obj });
+      cache.musteriler.sort((a, b) => a.ad.localeCompare(b.ad, 'tr'));
+    }
+    closeModal('modal-musteri');
+    renderMusteriler();
+    renderDashboard();
+    toast('Müşteri kaydedildi ✓', 'success');
+  } catch(e) { toast('Hata: ' + e.message, 'error'); }
+};
+
+window.deleteMusteri = async function(id) {
+  if (!confirm('Bu müşteri silinsin mi?')) return;
+  await deleteDoc(doc(db, 'musteriler', id));
+  cache.musteriler = cache.musteriler.filter(m => m.id !== id);
+  renderMusteriler();
+  renderDashboard();
+  toast('Silindi', 'success');
+};
+
+// ============================================================
+// CİHAZLAR
+// ============================================================
+function renderCihazlar() {
+  const q = (document.getElementById('search-cihaz')?.value || '').toLowerCase();
+  const liste = cache.cihazlar.filter(c =>
+    !q || c.marka?.toLowerCase().includes(q) || c.model?.toLowerCase().includes(q) || musteriAd(c.musteriId).toLowerCase().includes(q)
+  );
+  const tbody = document.getElementById('cihaz-tbody');
+  if (!liste.length) {
+    tbody.innerHTML = '<tr><td colspan="7"><div class="empty-state"><div class="empty-icon">🏠</div><p>Cihaz bulunamadı</p></div></td></tr>';
+    return;
+  }
+  tbody.innerHTML = liste.map(c => {
+    const diff = daysDiff(c.sonrakibakim);
+    const bakimRenk = diff !== null && diff <= 7 ? 'badge-red' : diff !== null && diff <= 30 ? 'badge-yellow' : 'badge-green';
+    return `<tr>
+      <td><strong>${c.marka}</strong> <span style="color:var(--muted)">${c.model||''}</span></td>
+      <td>${musteriAd(c.musteriId)}</td>
+      <td style="color:var(--muted);font-family:'JetBrains Mono',monospace;font-size:0.8rem">${c.serino||'—'}</td>
+      <td style="color:var(--muted)">${c.yil||'—'}</td>
+      <td style="color:var(--muted)">${fmtDate(c.sonbakim)}</td>
+      <td>${c.sonrakibakim ? `<span class="badge ${bakimRenk}">${fmtDate(c.sonrakibakim)}</span>` : '—'}</td>
+      <td>
+        <div style="display:flex;gap:6px">
+          <button class="btn btn-sm btn-primary" onclick="editCihaz('${c.id}')">✏️</button>
+          <button class="btn btn-sm btn-danger" onclick="deleteCihaz('${c.id}')">🗑</button>
+        </div>
+      </td>
+    </tr>`;
+  }).join('');
+}
+
+window.openCihazModal = function(c) {
+  document.getElementById('cihaz-modal-title').textContent = c ? 'Cihaz Düzenle' : 'Yeni Cihaz';
+  document.getElementById('c-id').value = c?.id || '';
+  document.getElementById('c-marka').value = c?.marka || '';
+  document.getElementById('c-model').value = c?.model || '';
+  document.getElementById('c-serino').value = c?.serino || '';
+  document.getElementById('c-yil').value = c?.yil || '';
+  document.getElementById('c-sonbakim').value = c?.sonbakim || '';
+  document.getElementById('c-sonrakibakim').value = c?.sonrakibakim || '';
+  document.getElementById('c-notlar').value = c?.notlar || '';
+  const mSel = document.getElementById('c-musteri');
+  mSel.innerHTML = '<option value="">Seçin...</option>' + cache.musteriler.map(m =>
+    `<option value="${m.id}" ${m.id === c?.musteriId ? 'selected' : ''}>${m.ad} ${m.soyad}</option>`
+  ).join('');
+  openModal('modal-cihaz');
+};
+
+window.editCihaz = function(id) { window.openCihazModal(cache.cihazlar.find(c => c.id === id)); };
+
+window.saveCihaz = async function() {
+  const marka = document.getElementById('c-marka').value.trim();
+  const musteriId = document.getElementById('c-musteri').value;
+  if (!marka || !musteriId) { toast('Müşteri ve marka zorunludur!', 'error'); return; }
+  const obj = {
+    musteriId, marka,
+    model: document.getElementById('c-model').value.trim(),
+    serino: document.getElementById('c-serino').value.trim(),
+    yil: parseInt(document.getElementById('c-yil').value) || null,
+    sonbakim: document.getElementById('c-sonbakim').value || null,
+    sonrakibakim: document.getElementById('c-sonrakibakim').value || null,
+    notlar: document.getElementById('c-notlar').value.trim(),
+    guncellendi: new Date().toISOString()
+  };
+  const editId = document.getElementById('c-id').value;
+  try {
+    if (editId) {
+      await updateDoc(doc(db, 'cihazlar', editId), obj);
+      const idx = cache.cihazlar.findIndex(c => c.id === editId);
+      cache.cihazlar[idx] = { id: editId, ...obj };
+    } else {
+      obj.olusturuldu = new Date().toISOString();
+      const ref = await addDoc(collection(db, 'cihazlar'), obj);
+      cache.cihazlar.push({ id: ref.id, ...obj });
+      cache.cihazlar.sort((a, b) => a.marka.localeCompare(b.marka, 'tr'));
+    }
+    closeModal('modal-cihaz');
+    renderCihazlar();
+    toast('Cihaz kaydedildi ✓', 'success');
+  } catch(e) { toast('Hata: ' + e.message, 'error'); }
+};
+
+window.deleteCihaz = async function(id) {
+  if (!confirm('Bu cihaz silinsin mi?')) return;
+  await deleteDoc(doc(db, 'cihazlar', id));
+  cache.cihazlar = cache.cihazlar.filter(c => c.id !== id);
+  renderCihazlar();
+  toast('Silindi', 'success');
+};
+
+// ============================================================
+// BAKIM TAKİBİ + WHATSAPP
+// ============================================================
+function renderBakim() {
+  const liste = getBakimList();
+  const tbody = document.getElementById('bakim-tbody');
+  if (!liste.length) {
+    tbody.innerHTML = '<tr><td colspan="7"><div class="empty-state"><div class="empty-icon">✅</div><p>7 gün içinde bakımı dolacak cihaz yok</p></div></td></tr>';
+    return;
+  }
+  tbody.innerHTML = liste.map(c => {
+    const m = cache.musteriler.find(x => x.id === c.musteriId);
+    const diff = daysDiff(c.sonrakibakim);
+    const tel = m?.tel?.replace(/[\s\-\(\)]/g, '') || '';
+    const waMsg = encodeURIComponent(
+      `Sayın ${m?.ad || 'Müşterimiz'}, kombinizdeki yıllık bakım zamanınız yaklaşmaktadır. ${c.marka} ${c.model||''} kombinizi ${fmtDate(c.sonrakibakim)} tarihine kadar servise getirmenizi öneririz. Randevu için bizimle iletişime geçebilirsiniz.`
+    );
+    const waLink = `https://wa.me/90${tel}?text=${waMsg}`;
+    return `<tr>
+      <td><strong>${c.marka}</strong> ${c.model||''}</td>
+      <td>${m ? m.ad+' '+m.soyad : '—'}</td>
+      <td>${m?.tel ? `<a href="tel:${m.tel}" style="color:var(--accent);text-decoration:none">${m.tel}</a>` : '—'}</td>
+      <td style="color:var(--muted)">${fmtDate(c.sonbakim)}</td>
+      <td><span class="badge badge-yellow">${fmtDate(c.sonrakibakim)}</span></td>
+      <td><span class="badge ${diff <= 2 ? 'badge-red' : 'badge-yellow'}">${diff === 0 ? 'Bugün!' : diff + ' gün kaldı'}</span></td>
+      <td>
+        <a href="${waLink}" target="_blank" class="btn btn-sm wa-btn">
+          💬 WhatsApp
+        </a>
+      </td>
+    </tr>`;
+  }).join('');
+}
+
+// ============================================================
+// RAPORLAR (Admin)
+// ============================================================
+function renderRaporlar() {
+  if (currentRole !== 'admin') return;
+  const isler = cache.isemirleri;
+  const now = new Date();
+
+  // Aylık özet (son 6 ay)
+  const aylik = [];
+  for (let i = 5; i >= 0; i--) {
+    const d = new Date(now.getFullYear(), now.getMonth() - i, 1);
+    const sonD = new Date(now.getFullYear(), now.getMonth() - i + 1, 0);
+    const ayIsler = isler.filter(x => x.tarih >= d.toISOString().split('T')[0] && x.tarih <= sonD.toISOString().split('T')[0]);
+    const gelir = ayIsler.filter(x => x.durum === 'Tamamlandı').reduce((s, x) => s + (parseFloat(x.ucret)||0), 0);
+    aylik.push({ ay: d.toLocaleDateString('tr-TR', { month: 'long', year: 'numeric' }), sayi: ayIsler.length, gelir });
+  }
+
+  document.getElementById('rapor-aylik').innerHTML = `
+    <table style="width:100%">
+      <thead><tr><th>Ay</th><th>İş Sayısı</th><th>Gelir</th></tr></thead>
+      <tbody>${aylik.map(a => `<tr><td>${a.ay}</td><td><span class="badge badge-blue">${a.sayi}</span></td><td style="color:var(--success);font-weight:600">${a.gelir.toLocaleString('tr-TR')} ₺</td></tr>`).join('')}</tbody>
+    </table>`;
+
+  // En çok iş yapılan müşteriler
+  const musteriIs = cache.musteriler.map(m => ({
+    ad: `${m.ad} ${m.soyad}`,
+    sayi: isler.filter(i => i.musteriId === m.id).length
+  })).sort((a, b) => b.sayi - a.sayi).slice(0, 8);
+
+  document.getElementById('rapor-musteri').innerHTML = `
+    <table style="width:100%">
+      <thead><tr><th>Müşteri</th><th>İş Sayısı</th></tr></thead>
+      <tbody>${musteriIs.map(m => `<tr><td>${m.ad}</td><td><span class="badge badge-purple">${m.sayi}</span></td></tr>`).join('')}</tbody>
+    </table>`;
+
+  // Toplam gelir özeti
+  const toplamGelir = isler.filter(i => i.durum === 'Tamamlandı').reduce((s, i) => s + (parseFloat(i.ucret)||0), 0);
+  const aylikGelir = aylik[aylik.length - 1]?.gelir || 0;
+  document.getElementById('rapor-gelir').innerHTML = `
+    <div style="display:flex;gap:30px;flex-wrap:wrap">
+      <div><div style="color:var(--muted);font-size:0.8rem;margin-bottom:6px">Toplam Gelir</div><div style="font-size:1.8rem;font-weight:800;color:var(--success);font-family:'JetBrains Mono',monospace">${toplamGelir.toLocaleString('tr-TR')} ₺</div></div>
+      <div><div style="color:var(--muted);font-size:0.8rem;margin-bottom:6px">Bu Ay</div><div style="font-size:1.8rem;font-weight:800;color:var(--accent);font-family:'JetBrains Mono',monospace">${aylikGelir.toLocaleString('tr-TR')} ₺</div></div>
+      <div><div style="color:var(--muted);font-size:0.8rem;margin-bottom:6px">Ort. İş Ücreti</div><div style="font-size:1.8rem;font-weight:800;font-family:'JetBrains Mono',monospace">${isler.length ? Math.round(toplamGelir/isler.filter(i=>i.ucret>0).length||0).toLocaleString('tr-TR') : 0} ₺</div></div>
+    </div>`;
+}
+
+// ============================================================
+// KULLANICILAR (Admin)
+// ============================================================
+function renderKullanicilar() {
+  if (currentRole !== 'admin') return;
+  const tbody = document.getElementById('kullanici-tbody');
+  tbody.innerHTML = cache.kullanicilar.map(k => `
+    <tr>
+      <td>${k.email||'—'}</td>
+      <td>${k.ad||'—'}</td>
+      <td>${k.rol === 'admin' ? '<span class="badge badge-blue">Yönetici</span>' : '<span class="badge badge-green">Teknisyen</span>'}</td>
+      <td>
+        <button class="btn btn-sm btn-secondary" onclick="toggleKullaniciRol('${k.id}','${k.rol}')">
+          ${k.rol === 'admin' ? '↓ Teknisyen Yap' : '↑ Yönetici Yap'}
+        </button>
+      </td>
+    </tr>
+  `).join('');
+}
+
+window.toggleKullaniciRol = async function(id, mevcutRol) {
+  const yeniRol = mevcutRol === 'admin' ? 'technician' : 'admin';
+  if (!confirm(`Rolü ${yeniRol === 'admin' ? 'Yönetici' : 'Teknisyen'} olarak değiştir?`)) return;
+  await updateDoc(doc(db, 'kullanicilar', id), { rol: yeniRol });
+  const idx = cache.kullanicilar.findIndex(k => k.id === id);
+  cache.kullanicilar[idx].rol = yeniRol;
+  renderKullanicilar();
+  toast('Rol güncellendi ✓', 'success');
+};
+
+// ============================================================
+// MODAL + TOAST + SİDEBAR HELPERS
+// ============================================================
+window.openModal = function(id) { document.getElementById(id).classList.add('open'); };
+window.closeModal = function(id) { document.getElementById(id).classList.remove('open'); };
+
+document.querySelectorAll('.modal-bg').forEach(bg => {
+  bg.addEventListener('click', e => { if (e.target === bg) bg.classList.remove('open'); });
+});
+
+window.toast = function(msg, type = 'info') {
+  const container = document.getElementById('toast-container');
+  const el = document.createElement('div');
+  el.className = `toast ${type}`;
+  const icons = { success: '✅', error: '❌', info: 'ℹ️' };
+  el.innerHTML = `<span>${icons[type]||'ℹ️'}</span> ${msg}`;
+  container.appendChild(el);
+  setTimeout(() => { el.style.opacity = '0'; el.style.transition = 'opacity 0.3s'; setTimeout(() => el.remove(), 300); }, 3000);
+};
+
+window.openSidebar = function() {
+  document.getElementById('sidebar').classList.add('open');
+  document.getElementById('sidebar-overlay').classList.add('open');
+};
+window.closeSidebar = function() {
+  document.getElementById('sidebar').classList.remove('open');
+  document.getElementById('sidebar-overlay').classList.remove('open');
+};
+</script>
+</body>
+</html>
